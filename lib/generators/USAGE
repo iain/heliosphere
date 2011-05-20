@@ -1,0 +1,8 @@
+Description:
+    Creates initializer stub
+
+Example:
+    rails generate heliosphere
+
+    This will create:
+        config/initializers/heliosphere.rb
