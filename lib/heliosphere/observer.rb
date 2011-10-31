@@ -7,11 +7,11 @@ module Heliosphere
     observe *Heliosphere.indexer.model_names
 
     def after_save(object)
-      running? { Sunspot.index(object) }
+      running? { Sunspot.index(object); Sunspot.commit }
     end
 
     def after_destroy(object)
-      running? { Sunspot.remove(object) }
+      running? { Sunspot.remove(object); Sunspot.commit }
     end
 
     private
