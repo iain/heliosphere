@@ -1,4 +1,5 @@
 require 'heliosphere/indexer'
+require 'heliosphere/deamon_check'
 
 module Heliosphere
 
@@ -13,14 +14,14 @@ module Heliosphere
     end
 
     def start
-      Sunspot::Rails::Server.new.start if down?
-      wait(&:up?)
+      Sunspot::Rails::Server.new.start unless DeamonCheck.port_up?(port)
+      wait { DeamonCheck.port_up?(port) }
       sleep POLL_INTERVAL
     end
 
     def stop
-      Sunspot::Rails::Server.new.stop if up?
-      wait(&:down?)
+      Sunspot::Rails::Server.new.stop if DeamonCheck.port_up?(port)
+      wait { !DeamonCheck.port_up?(port) }
     end
 
     def start_and_reindex
@@ -36,7 +37,7 @@ module Heliosphere
     end
 
     def up?
-      `netstat -an` =~ /\b#{port}\b/m
+      DeamonCheck.up?(port)
     end
 
     def down?

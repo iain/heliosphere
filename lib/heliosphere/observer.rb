@@ -4,14 +4,14 @@ module Heliosphere
 
   class Observer < ActiveRecord::Observer
 
-    observe *Heliosphere.indexer.model_names
+    observe *Heliosphere.indexer.models
 
     def after_save(object)
-      running? { Sunspot.index(object); Sunspot.commit }
+      running? { Sunspot.index!(object); Sunspot.commit }
     end
 
     def after_destroy(object)
-      running? { Sunspot.remove(object); Sunspot.commit }
+      running? { Sunspot.remove!(object); Sunspot.commit }
     end
 
     private
