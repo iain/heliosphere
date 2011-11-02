@@ -25,14 +25,26 @@ module Heliosphere
 
     def start_and_reindex
       start
+      clear_index
       reindex
     end
 
     def reindex
       Heliosphere.indexer.models.each do |model|
-        model.remove_all_from_index
-        model.index
+        model.all.each do |record|
+          Sunspot.index(record)
+        end
       end
+
+      Sunspot.commit
+    end
+
+    def clear_index
+      Heliosphere.indexer.models.each do |model|
+        model.remove_all_from_index
+      end
+
+      Sunspot.commit
     end
 
     def up?
