@@ -29,6 +29,7 @@ module Heliosphere
     end
 
     def reindex
+      wait(&:up?)
       clear_index
       Heliosphere.indexer.models.each do |model|
         model.all.each do |record|
