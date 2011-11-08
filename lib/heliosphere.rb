@@ -13,7 +13,7 @@ module Heliosphere
   end
 
   def self.reindex
-    server.start_and_reindex
+    server.reindex
   end
 
   def self.wait(&block)

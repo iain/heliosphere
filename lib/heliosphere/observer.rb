@@ -4,10 +4,10 @@ module Heliosphere
 
   class Observer < ActiveRecord::Observer
 
-    observe *Heliosphere.indexer.model_names
+    observe *Heliosphere.indexer.models
 
     def after_save(object)
-      running? { Sunspot.index(object) }
+      running? { Sunspot.index(object) if object.index_on_save? }
     end
 
     def after_destroy(object)
