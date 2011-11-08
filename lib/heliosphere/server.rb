@@ -31,6 +31,7 @@ module Heliosphere
     def reindex
       wait(&:up?)
       clear_index
+
       Heliosphere.indexer.models.each do |model|
         model.all.each do |record|
           Sunspot.index(record)
@@ -44,8 +45,6 @@ module Heliosphere
       Heliosphere.indexer.models.each do |model|
         model.remove_all_from_index
       end
-
-      Sunspot.commit
     end
 
     def up?

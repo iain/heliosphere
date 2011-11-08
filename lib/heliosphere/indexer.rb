@@ -12,6 +12,7 @@ module Heliosphere
 
     def define(&block)
       instance_eval(&block)
+      extend_active_record
       apply
     end
 
@@ -26,6 +27,27 @@ module Heliosphere
           searchable(options, &block)
         end
       end
+    end
+
+    def extend_active_record
+      ActiveRecord::Base.class_eval %Q{
+        def index_on_save?
+          @index_on_save = true unless instance_variable_defined?(:@index_on_save)
+          @index_on_save
+        end
+
+        def save_without_index
+          @index_on_save = false
+          save
+          @index_on_save = true
+        end
+
+        def save_without_index!
+          @index_on_save = false
+          save!
+          @index_on_save = true
+        end
+      }
     end
 
     def index(model, &block)
